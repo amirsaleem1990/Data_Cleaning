@@ -1,0 +1,209 @@
+# remove punctuations
+import string
+words = text.split()
+table = str.maketrans('', '', string.punctuation)
+punctuations_removed = [w.translate(table) for w in words]
+--------------------------------------------------------------------
+# split text into sentences
+from nltk import sent_tokenize
+sentences = sent_tokenize(text)
+# it returns list of lists, each lish is a sentence
+--------------------------------------------------------------------
+# remove punctuations and stop words
+snow = nltk.stem.SnowballStemmer('english')
+for sentence in text:
+	cleanr = re.compile('<.*?>')
+    sentence = re.sub(cleanr, ' ', sentence)      		     #Removing HTML tags
+    sentence = re.sub(r'[?|!|\'|"|#]',r'',sentence)
+    sentence = re.sub(r'[.|,|)|(|\|/]',r' ',sentence)        #Removing Punctuations
+words = [snow.stem(word) for word in sentence.split() if word not in stopwords.words('english')]
+--------------------------------------------------------------------
+from nltk.corpus import stopwords                  					 #Stopwords corpus
+from nltk.stem import PorterStemmer             				     # Stemmer
+
+from sklearn.feature_extraction.text import CountVectorizer          #For Bag of words
+from sklearn.feature_extraction.text import TfidfVectorizer          #For TF-IDF
+from gensim.models import Word2Vec                                   #For Word2Vec
+--------------------------------------------------------------------
+# text cleaning
+# https://stackoverflow.com/questions/48865150/pipeline-for-text-cleaning-processing-in-python
+import nltk
+import re
+import string
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer # or LancasterStemmer, RegexpStemmer, SnowballStemmer
+
+default_stemmer = PorterStemmer()
+default_stopwords = stopwords.words('english') # or any other list of your choice
+def clean_text(text, ):
+
+    def tokenize_text(text):
+        return [w for s in sent_tokenize(text) for w in word_tokenize(s)]
+
+    def remove_special_characters(text, characters=string.punctuation.replace('-', '')):
+        tokens = tokenize_text(text)
+        pattern = re.compile('[{}]'.format(re.escape(characters)))
+        return ' '.join(filter(None, [pattern.sub('', t) for t in tokens]))
+
+    def stem_text(text, stemmer=default_stemmer):
+        tokens = tokenize_text(text)
+        return ' '.join([stemmer.stem(t) for t in tokens])
+
+    def remove_stopwords(text, stop_words=default_stopwords):
+        tokens = [w for w in tokenize_text(text) if w not in stop_words]
+        return ' '.join(tokens)
+
+    text = text.strip(' ') # strip whitespaces
+    text = text.lower() # lowercase
+    text = stem_text(text) # stemming
+    text = remove_special_characters(text) # remove punctuation and symbols
+    text = remove_stopwords(text) # remove stopwords
+    #text.strip(' ') # strip whitespaces again?
+    return text
+--------------------------------------------------------------------------
+# english mistakes
+# https://github.com/rfk/pyenchant/blob/master/website/content/tutorial.rst
+from enchant.checker import SpellChecker
+for i in df['columns']:
+	chkr = SpellChecker("en_US")
+	chkr.set_text(i)
+	for err in chkr:
+		print( "ERROR:", err.word)
+--------------------------------------------------------------------------
+# NOTE: run on ubuntu terminal
+sudo apt-get install aspell
+cat file.txt | aspell list
+# return all english typo
+
+# save these results in file
+cat file.txt | aspell list > 'terminal_output.txt'
+
+# then (in terminal)
+ipython
+with open('terminal.txt', 'r') as file:
+     file = file.readlines()
+a = []
+for i in file:                         
+     a.append(i.replace('\n' ,''))
+
+# check
+len(a) == len(file)
+
+# count of all mistakes (with replacement)
+len(a)
+
+# count of unique mistakes (with replacement) 
+len(set(a))
+
+# unique sorted mistakes
+sa = sorted(list(set(a)))
+
+# tokenize and remove puncuations
+
+from nltk.tokenize import RegexpTokenizer
+tokenizer = RegexpTokenizer(r'\w+')
+df["tokens"] = df["text"].apply(tokenizer.tokenize)
+
+# count all words(tokens) in the data
+from collections import Counter
+count_all_words = Counter(all_words)
+#return a dict where each key is a unique word in data and each value count of that word accuring in whole data.. 
+count_all_words
+# {'just': 459,
+         'happened': 32,
+         'a': 3109,
+         'terrible': 14,
+         'car': 133,
+         'crash': 167,
+         'our': 151,
+         'deeds': 2,
+         'are': 600,
+         'the': 4621,
+         'reason': 29}
+
+#give only most commeon 100 words in data:
+count_all_words.most_common(100)
+
+# [('the', 4621),
+ ('a', 3109),
+ ('to', 2837),
+ ('in', 2808),
+ ('of', 2610),
+ ('i', 2511),
+ ('and', 2023),
+ ('s', 1403),
+ ('is', 1392),
+ ('you', 1287),
+ ('for', 1245),
+ ('on', 1238),
+ ('it', 1141),
+ ('my', 976),
+ ('that', 853),
+ ('with', 797),
+ ('by', 777),
+ .....
+ .....]
+-------------------------------------------------------------------------------------------------------
+import re
+for test_string in ['555-1212', 'ILL-EGAL']:
+    if re.match(r'^\d{3}-\d{4}$', test_string):
+    # ooper wali line me ({3}) is me 3 ka matlab h k (test_string) me (-)
+    # sy pehly 3 cheezen hen (555) yani k (-) ka index(3) h..
+    # or d{4} ka matlab h k (test_string) me (-)
+    # k baad 4 cheezen hen..
+        print(test_string, 'is a valid US local phone number')
+    else:
+        print (test_string, 'rejected')
+-------------------------------------------------------------------------------------------------------
+# remove punctuations
+# all these !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ar removed using <string.punctuation>
+import string
+'!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~am,,,'.translate(str.maketrans('','',string.punctuation))
+# am
+-------------------------------------------------------------------------------------------------------
+# replace or remove web links using re
+# in this example we replace all links to "<url>"
+for i in range(len(list_of_strings)):
+    if 'www.' in list_of_strings[i] or 'http:' in list_of_strings[i]  or '.com' in list_of_strings[i]:
+        list_of_strings[i] = re.sub(r"([^ ]+(?<=\.[a-z]{3}))", "<url>", list_of_strings[i])
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+

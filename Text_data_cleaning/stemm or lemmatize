@@ -1,0 +1,21 @@
+stemm or lemmatize
+
+1- stemming me word k aakhri izafi hissy ko kaat dety hen, jis ki wajah sy vocabeliry kam to ho jati h eg: <according>  and <accordance> dono ko <accord> kar dya, jab k lemmatizer in dono ko isi tarah rehny deta h.
+2- stemming me all words ko wo khud lower kar deta h, to small or capital ka variance khatam ho jata h, jab k lemmatizer words ko lower nahi karta.
+3- text ko token me convert karny k 2 tareeqy hen:
+	1- core pyton:
+	 	words =  [word for word in text.split()]
+	 	masla: <.>,<'>, <,> wagera ko word ka hissa bana deta h
+ 	2- nltk:
+ 		import nltk
+ 		words = nltk.word_tokenize(text)
+ 		<.> wagera ko alag word bana deta h
+ 		masla: <shouldn't> ko 2 words kar deta h, <'should'> and "n't"
+ 		hal: agar <n't> k tokens zyada hen to <n't> sy pehly waly token or is ko mila kar 1 hi tokan bana do, jo k ye ho <should_not>
+
+
+
+
+sentence splitting
+agar ham manually tareeqy sy text ko sentences me split karty hen to hame ye define karna ho ga k kis charachter ki base par splitting ki jay, agar ham <.> ki base par karty hen to float masla karen gy .... 
+yahan ham use karen gy nltk.sent_tokenize() jo k hames sentences ko split kar k de ga.
