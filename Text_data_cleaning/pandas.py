@@ -13,4 +13,29 @@ from nltk.corpus import stopwords
 stop = stopwords.words('english')
 train['stopwords'] = train['tweet'].apply(lambda x: len([x for x in x.split() if x in stop]))
 #=====================================================
-
+# Qty of words starts with <#> in each cell in particuler column
+train['hastags'] = train['tweet'].apply(lambda x: len([x for x in x.split() if x.startswith('#')]))
+#=====================================================
+# Qty of numeric in each cell in particuler column
+train['numerics'] = train['tweet'].apply(lambda x: len([x for x in x.split() if x.isdigit()]))
+#=====================================================
+# remove punctuation .................. train['tweet'] = train['tweet'].str.replace('[^\w\s]','')
+#=====================================================
+# remove stop words:
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
+train['tweet'] = train['tweet'].apply(lambda x: " ".join(x for x in x.split() if x not in stop))
+#=====================================================
+# Common word removal
+freq = pd.Series(' '.join(train['tweet']).split()).value_counts()[:10]
+freq = list(freq.index)
+train['tweet'] = train['tweet'].apply(lambda x: " ".join(x for x in x.split() if x not in freq))
+#=====================================================
+# Rare words removal
+freq = pd.Series(' '.join(train['tweet']).split()).value_counts()[-10:]
+freq = list(freq.index)
+train['tweet'] = train['tweet'].apply(lambda x: " ".join(x for x in x.split() if x not in freq))
+#=====================================================
+# Spelling correction
+from textblob import TextBlob
+train['tweet'][:5].apply(lambda x: str(TextBlob(x).correct()))
